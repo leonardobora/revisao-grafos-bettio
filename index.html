@@ -285,7 +285,7 @@
       box-shadow: var(--shadow-md);
     }
 
-    /* Flashcard 3D Moderno */
+    /* Flashcard 3D Moderno - CORRIGIDO */
     .flashcard {
       background: var(--color-surface);
       border-radius: var(--radius-xl);
@@ -325,14 +325,15 @@
     }
 
     .flashcard:hover {
-      transform: scale(1.02) rotateX(2deg);
+      transform: scale(1.02);
       box-shadow: var(--shadow-xl);
     }
 
     .flashcard.flipped {
       background: var(--gradient-success);
       color: white;
-      transform: rotateY(180deg);
+      /* Removido transform: rotateY(180deg) para evitar texto invertido */
+      transform: scale(1.05);
     }
 
     .card-actions {
