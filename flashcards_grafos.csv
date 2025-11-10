@@ -1,0 +1,57 @@
+Categoria,Pergunta,Resposta,Dica
+Conceitos Básicos,O que é um Grafo?,"Um grafo G(V,E) é uma estrutura composta por:
+- V: conjunto não vazio de vértices (ou nós)
+- E: subconjunto de pares não ordenados de V (arestas)","Lembre-se: G(V,E) = Vértices + Arestas"
+Conceitos Básicos,O que é a Ordem de um Grafo?,"É o número de vértices do grafo.
+Símbolo: |V|",Ordem = quantidade de vértices
+Conceitos Básicos,O que é Adjacência em Grafos?,"Duas arestas são adjacentes se incidem sobre o mesmo vértice.
+Exemplo: (Ana, Maria) e (Ana, José) são adjacentes pois compartilham o vértice Ana",Adjacente = compartilha vértice
+Graus de Vértices,O que é Grau de um Vértice?,"É o número de arestas incidentes no vértice.
+OBS: Um laço conta como grau 2!",Conte as arestas que tocam o vértice
+Graus de Vértices,Diferença entre Grau de Entrada e Grau de Saída,"- Grau de Entrada (indegree): número de arestas que ENTRAM em um nó
+- Grau de Saída (outdegree): número de arestas que SAEM de um nó
+Aplica-se a grafos ORIENTADOS","In = entra, Out = sai"
+Graus de Vértices,O que é um Vértice Isolado?,É um vértice com grau = 0 (não tem arestas conectadas a ele),Isolado = sozinho = grau 0
+Graus de Vértices,O que é um Vértice Pendente?,É um vértice com Gr(V) = 1 (apenas uma aresta conectada),Pendente = pendurado por 1 aresta
+Tipos de Arestas,O que é um Laço?,"É uma aresta que sai e entra no mesmo nó.
+IMPORTANTE: Laço sempre tem grau = 2",Laço = loop no mesmo vértice
+Tipos de Arestas,O que são Arestas Paralelas?,São duas ou mais arestas que conectam os mesmos dois vértices,Paralelas = mesmo caminho repetido
+Tipos de Arestas,O que é uma Ponte?,"É uma aresta que, ao ser removida, torna o grafo DESCONEXO","Ponte = se tirar, desconecta"
+Classificação de Grafos,Diferença entre Grafo Conexo e Desconexo,"- CONEXO: existe pelo menos um caminho entre cada par de vértices
+- DESCONEXO: existe pelo menos um par de vértices sem caminho entre eles",Conexo = todo mundo conectado
+Classificação de Grafos,O que é um Multigrafo?,É um grafo que possui laços E/OU arestas paralelas,Multi = tem repetição
+Classificação de Grafos,O que é um Grafo Simples?,É um grafo que NÃO possui laços nem arestas paralelas,Simples = sem repetições
+Classificação de Grafos,O que é um Grafo Completo?,"É um grafo simples onde TODO vértice é adjacente a TODOS os outros vértices.
+Notação: Kn (onde n é o número de vértices)",Completo = todos conectados com todos
+Classificação de Grafos,O que é um Subgrafo?,É um grafo formado a partir de um subconjunto dos vértices e arestas de um grafo original,Sub = parte de um grafo maior
+Classificação de Grafos,O que é um Grafo Complementar?,"O complemento de G é um grafo H com os MESMOS vértices, onde dois vértices são adjacentes em H SE E SOMENTE SE não são adjacentes em G.
+Regra: preenche arestas faltantes para grafo completo e remove as existentes",Complemento = inverte as arestas
+Classificação de Grafos,O que é um Grafo Bipartido?,"É um grafo cujos vértices podem ser divididos em dois conjuntos U e V, onde toda aresta conecta um vértice de U a um vértice de V (nunca dois do mesmo conjunto)",Bi = dois grupos separados
+Classificação de Grafos,Diferença entre Grafo Rotulado e Valorado,"- ROTULADO: cada vértice tem um rótulo/nome
+- VALORADO (ou ponderado): as arestas possuem valores/pesos numéricos","Rotulado = nomes, Valorado = números nas arestas"
+Caminhos,O que é um Caminho?,É uma sequência de arestas onde o vértice final de uma aresta é o vértice inicial da próxima,Caminho = seguir arestas conectadas
+Caminhos,Teorema das Árvores (3 propriedades),"Seja T uma árvore com n vértices:
+I. T é conexo e sem ciclos
+II. T é conexo e possui (n-1) arestas
+III. Cada aresta é uma ponte",Árvore: conexo + n-1 arestas + sem ciclos
+Euleriano vs Hamiltoniano,O que é um Caminho Euleriano? (MACETE),"**Euleriano + Aresta** (vogais A e E)
+Caminho que visita cada ARESTA apenas uma vez
+
+Circuito Euleriano: começa e termina no mesmo vértice",EULERIANO = ARESTA (vogais)
+Euleriano vs Hamiltoniano,O que é um Caminho Hamiltoniano? (MACETE),"**Hamiltoniano + Vértices** (consoantes H e V)
+Caminho que passa por todos os VÉRTICES uma única vez
+
+Ciclo Hamiltoniano: caminho hamiltoniano fechado",HAMILTONIANO = VÉRTICES (consoantes)
+Representações,O que é Lista de Adjacência?,Estrutura de dados onde cada vértice tem uma lista com seus vértices adjacentes (vizinhos),Lista = cada vértice tem sua lista de vizinhos
+Representações,O que é Matriz de Adjacência?,"Matriz n×n onde:
+- Posição [i][j] = 1 se existe aresta entre i e j
+- Posição [i][j] = 0 se não existe aresta
+Para grafos ponderados: [i][j] = peso da aresta","Matriz: 1 = conectado, 0 = não conectado"
+Representações,O que é Matriz de Incidência?,"Matriz n×m (vértices × arestas) onde:
+- Elemento [v][e] representa quantas vezes (0, 1 ou 2) o vértice v e a aresta e são incidentes",Incidência: vértices vs arestas
+Isomorfismo,O que são Grafos Isomorfos?,"Dois grafos G1(V1,E1) e G2(V2,E2) são isomorfos se:
+- |V1| = |V2|
+- Existe função f: V1→V2 que preserva adjacências
+- (i,j) ∈ E1 ⟺ (f(i),f(j)) ∈ E2
+
+Em outras palavras: mesma estrutura, mas vértices podem ter nomes diferentes","Isomorfo = mesma forma, nomes diferentes"

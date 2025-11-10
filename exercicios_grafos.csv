@@ -1,0 +1,237 @@
+Nível,Número,Título,Enunciado,Resposta
+Básico,1,Identificação de Elementos,"Dado o grafo abaixo:
+    A --- B
+    |     |
+    C --- D --- E
+
+a) Qual é a ordem do grafo?
+b) Liste todos os pares de vértices adjacentes
+c) Calcule o grau de cada vértice
+d) O grafo é conexo? Por quê?","a) Ordem = 5 vértices (A, B, C, D, E)
+
+b) Vértices adjacentes:
+   - A e B
+   - A e C
+   - B e D
+   - C e D
+   - D e E
+
+c) Graus:
+   - Gr(A) = 2 (conectado a B e C)
+   - Gr(B) = 2 (conectado a A e D)
+   - Gr(C) = 2 (conectado a A e D)
+   - Gr(D) = 3 (conectado a B, C e E)
+   - Gr(E) = 1 (conectado apenas a D)
+
+d) SIM, é conexo porque existe caminho entre qualquer par de vértices."
+Básico,2,Classificação de Grafos,"Classifique cada grafo abaixo como:
+- Simples ou Multigrafo
+- Conexo ou Desconexo
+- Se possui pontes
+
+Grafo 1: A---B---C
+Grafo 2: A===B (duas arestas entre A e B)
+Grafo 3: A---B    C---D
+Grafo 4: A--⟲ (laço em A)","Grafo 1:
+- SIMPLES (sem laços ou arestas paralelas)
+- CONEXO (caminho entre todos os pares)
+- Pontes: A-B e B-C (remover qualquer uma desconecta o grafo)
+
+Grafo 2:
+- MULTIGRAFO (tem arestas paralelas)
+- CONEXO
+- Sem pontes (remover uma aresta ainda mantém conexão)
+
+Grafo 3:
+- SIMPLES
+- DESCONEXO (não há caminho entre A-B e C-D)
+- Pontes: todas as arestas são pontes
+
+Grafo 4:
+- MULTIGRAFO (tem laço)
+- CONEXO (apenas um vértice)
+- Sem ponte (remover o laço mantém o vértice)"
+Intermediário,3,Matriz de Adjacência,"Dada a matriz de adjacência:
+
+    A B C D
+A [ 0 1 1 0 ]
+B [ 1 0 0 1 ]
+C [ 1 0 0 1 ]
+D [ 0 1 1 0 ]
+
+a) Desenhe o grafo
+b) Qual o grau de cada vértice?
+c) Existe algum caminho Euleriano? Por quê?
+d) O grafo é completo?","a) Desenho:
+    A --- B
+    |     |
+    C --- D
+
+b) Graus:
+   Gr(A) = 2, Gr(B) = 2, Gr(C) = 2, Gr(D) = 2
+   (soma de cada linha/coluna na matriz)
+
+c) SIM, existe caminho Euleriano.
+   Condição: grafo conexo com exatamente 0 ou 2 vértices de grau ímpar.
+   Neste caso, TODOS os vértices têm grau PAR (2).
+   Logo, existe até CICLO Euleriano!
+
+d) NÃO é completo. Um grafo completo K4 teria todas as posições = 1
+   (exceto diagonal). Aqui faltam arestas A-D e B-C."
+Intermediário,4,Construir Matriz de Adjacência Ponderada,"Desenhe o grafo ponderado correspondente:
+
+      5        3
+  A ---- B ---- C
+  |            |
+  2            7
+  |            |
+  D ---------- E
+        4
+
+Construa:
+a) Matriz de adjacência ponderada
+b) Qual o caminho de A até E de menor custo?","a) Matriz de Adjacência Ponderada:
+
+    A  B  C  D  E
+A [ 0  5  0  2  0 ]
+B [ 5  0  3  0  0 ]
+C [ 0  3  0  0  7 ]
+D [ 2  0  0  0  4 ]
+E [ 0  0  7  4  0 ]
+
+(0 = sem conexão, números = pesos)
+
+b) Caminhos possíveis de A até E:
+   - A → D → E: 2 + 4 = 6 ✓ MENOR
+   - A → B → C → E: 5 + 3 + 7 = 15
+
+   Resposta: A-D-E com custo 6"
+Intermediário,5,Euleriano vs Hamiltoniano,"Para o grafo:
+    A --- B --- C
+    |     |     |
+    D --- E --- F
+
+a) Existe caminho Euleriano? E ciclo Euleriano?
+b) Existe caminho Hamiltoniano? E ciclo Hamiltoniano?
+c) Justifique suas respostas","a) EULERIANO (arestas):
+   Graus: A=2, B=3, C=2, D=2, E=3, F=2
+
+   Caminho Euleriano: SIM (2 vértices de grau ímpar: B e E)
+   Exemplo: A-B-C-F-E-B-E-D-A
+
+   Ciclo Euleriano: NÃO (nem todos os vértices têm grau par)
+
+b) HAMILTONIANO (vértices):
+   Caminho Hamiltoniano: SIM
+   Exemplo: A-B-E-D-A ou D-A-B-C-F-E
+
+   Ciclo Hamiltoniano: SIM
+   Exemplo: A-B-C-F-E-D-A (volta ao início)
+
+c) Justificativas:
+   - Euleriano: verifica graus (par/ímpar)
+   - Hamiltoniano: testa percursos visitando cada vértice uma vez"
+Avançado,6,Grafo Complementar,"Dado o grafo G:
+    A --- B
+    |     
+    C     D
+
+a) Desenhe o grafo complementar G'
+b) Qual a soma das arestas de G e G'?
+c) O que você conclui?","a) Grafo G tem arestas: {A-B, A-C}
+
+   Grafo Completo K4 teria: {A-B, A-C, A-D, B-C, B-D, C-D}
+
+   Grafo Complementar G' tem: {A-D, B-C, B-D, C-D}
+
+   Desenho de G':
+   A     B --- C
+   |     |     |
+   D ----------+
+
+b) Arestas de G: 2
+   Arestas de G': 4
+   Total: 2 + 4 = 6
+
+c) CONCLUSÃO: G + G' = Grafo Completo Kn
+   Para n=4: total de arestas = n(n-1)/2 = 4×3/2 = 6 ✓"
+Avançado,7,Identificar Grafo Bipartido,"Quais dos grafos abaixo são bipartidos? Justifique.
+
+Grafo 1: Triângulo (A-B-C-A)
+Grafo 2: Quadrado (A-B-C-D-A)
+Grafo 3: Estrela K(1,4) - um centro conectado a 4 pontas","Grafo 1: NÃO é bipartido
+   Motivo: Ciclo de comprimento ímpar (3 vértices)
+   Impossível dividir em 2 conjuntos sem arestas internas
+
+Grafo 2: SIM é bipartido
+   Partição: U={A, C} e V={B, D}
+   Todas as arestas conectam U com V
+
+Grafo 3: SIM é bipartido
+   Partição: U={centro} e V={4 pontas}
+   Todas as arestas conectam centro com pontas
+
+REGRA: Grafos com ciclos de comprimento ÍMPAR não são bipartidos"
+Avançado,8,Problema das Pontes de Königsberg,"A cidade tem 4 regiões (A, B, C, D) conectadas por 7 pontes:
+- 2 pontes entre A e B
+- 2 pontes entre A e C
+- 1 ponte entre B e D
+- 1 ponte entre C e D
+- 1 ponte entre B e C
+
+É possível atravessar todas as 7 pontes exatamente uma vez?","Modelando como grafo:
+- Vértices: A, B, C, D (regiões)
+- Arestas: 7 pontes
+
+Graus dos vértices:
+- Gr(A) = 4 (2+2)
+- Gr(B) = 5 (2+1+1+1)
+- Gr(C) = 5 (2+1+1+1)
+- Gr(D) = 2 (1+1)
+
+Para caminho Euleriano existir: no máximo 2 vértices de grau ímpar
+Aqui temos: 3 vértices de grau ímpar (B, C, D)
+
+RESPOSTA: NÃO é possível!
+Foi assim que Euler criou a Teoria dos Grafos em 1736."
+Avançado,9,Árvore e Propriedades,"Um grafo G tem 8 vértices e é uma árvore.
+
+a) Quantas arestas G possui?
+b) Se removermos 1 aresta, o que acontece?
+c) Se adicionarmos 1 aresta, o que acontece?
+d) Todas as arestas são pontes?","a) Por definição de árvore: n-1 arestas
+   n = 8 vértices → 8-1 = 7 arestas
+
+b) Remover 1 aresta → grafo DESCONEXO
+   (pois toda aresta em árvore é ponte)
+
+c) Adicionar 1 aresta → cria um CICLO
+   (árvore é acíclica por definição)
+
+d) SIM, todas as arestas são pontes
+   (propriedade III do teorema das árvores)
+
+TEOREMA: T é árvore ⟺ conexo + n-1 arestas + sem ciclos"
+Avançado,10,Isomorfismo,"Os grafos G1 e G2 são isomorfos? Justifique.
+
+G1: A-B, A-C, B-D, C-D (quadrado)
+G2: W-X, X-Y, Y-Z, Z-W (quadrado também)
+
+G3: 1-2, 1-3, 2-4, 3-4, 2-3 (K4 menos uma aresta)","G1 e G2: SIM, são isomorfos
+   Justificativa:
+   - Mesma quantidade de vértices: 4
+   - Mesma quantidade de arestas: 4
+   - Mesma sequência de graus: [2,2,2,2]
+   - Mesma estrutura: ciclo de 4 vértices
+
+   Mapeamento: A→W, B→X, C→Y, D→Z
+
+G1 e G3: NÃO são isomorfos
+   Justificativa:
+   - G1 tem 4 arestas, G3 tem 5 arestas
+   - Sequência de graus diferente:
+     G1: [2,2,2,2]
+     G3: [2,3,3,2] (não são iguais)
+
+DICA: Primeiro compare quantidades (vértices, arestas, graus).
+Se forem iguais, tente encontrar o mapeamento."
