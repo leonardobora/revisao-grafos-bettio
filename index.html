@@ -404,6 +404,77 @@
       color: var(--color-text);
     }
 
+    .exercicio-diagrama {
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      min-height: 300px;
+    }
+
+    .exercicio-diagrama svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .graph-node {
+      fill: white;
+      stroke: var(--color-primary);
+      stroke-width: 3;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .graph-node:hover {
+      fill: #f0f4ff;
+    }
+
+    .graph-edge {
+      stroke: var(--color-primary);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .graph-edge-double {
+      stroke: var(--color-primary);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: none;
+    }
+
+    .graph-edge-label {
+      fill: var(--color-text);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .graph-label {
+      fill: var(--color-text);
+      font-size: 18px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .graph-subgraph-title {
+      fill: var(--color-primary);
+      font-size: 14px;
+      font-weight: 600;
+      text-anchor: middle;
+    }
+
+    .graph-subgraph-bg {
+      fill: rgba(102, 126, 234, 0.05);
+      stroke: var(--color-primary);
+      stroke-width: 1;
+      stroke-dasharray: 5,5;
+      rx: 8;
+    }
+
     .exercicio-entrada {
       width: 100%;
       min-height: 120px;
@@ -636,6 +707,131 @@
   </div>
 
   <script>
+    // Custom Graph Rendering Library
+    class GraphRenderer {
+      constructor() {
+        this.nodeRadius = 30;
+        this.nodeSpacing = 120;
+      }
+
+      renderGraph(container, graphDef) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('viewBox', '0 0 600 400');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+        // Parse graph definition and render
+        this.parseAndRender(svg, graphDef);
+
+        container.innerHTML = '';
+        container.appendChild(svg);
+      }
+
+      parseAndRender(svg, graphDef) {
+        const { nodes, edges, layout } = graphDef;
+        
+        // Render edges first (so they appear behind nodes)
+        edges.forEach(edge => {
+          const from = nodes.find(n => n.id === edge.from);
+          const to = nodes.find(n => n.id === edge.to);
+          
+          if (edge.type === 'double') {
+            // Render two parallel lines for double edges
+            this.drawDoubleLine(svg, from.x, from.y, to.x, to.y, edge.label);
+          } else if (edge.type === 'loop') {
+            this.drawLoop(svg, from.x, from.y, edge.label);
+          } else {
+            this.drawLine(svg, from.x, from.y, to.x, to.y, edge.label);
+          }
+        });
+
+        // Render nodes
+        nodes.forEach(node => {
+          this.drawNode(svg, node.x, node.y, node.label, node.highlight);
+        });
+      }
+
+      drawNode(svg, x, y, label, highlight = false) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', this.nodeRadius);
+        circle.setAttribute('class', 'graph-node');
+        if (highlight) {
+          circle.setAttribute('fill', '#fff4e6');
+        }
+        svg.appendChild(circle);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        text.setAttribute('class', 'graph-label');
+        text.textContent = label;
+        svg.appendChild(text);
+      }
+
+      drawLine(svg, x1, y1, x2, y2, label = '') {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('class', 'graph-edge');
+        svg.appendChild(line);
+
+        if (label) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', (x1 + x2) / 2);
+          text.setAttribute('y', (y1 + y2) / 2 - 5);
+          text.setAttribute('class', 'graph-edge-label');
+          text.textContent = label;
+          svg.appendChild(text);
+        }
+      }
+
+      drawDoubleLine(svg, x1, y1, x2, y2, label = '') {
+        const offset = 5;
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const perpX = -dy / len * offset;
+        const perpY = dx / len * offset;
+
+        this.drawLine(svg, x1 + perpX, y1 + perpY, x2 + perpX, y2 + perpY);
+        this.drawLine(svg, x1 - perpX, y1 - perpY, x2 - perpX, y2 - perpY);
+
+        if (label) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', (x1 + x2) / 2);
+          text.setAttribute('y', (y1 + y2) / 2 - 10);
+          text.setAttribute('class', 'graph-edge-label');
+          text.textContent = label;
+          svg.appendChild(text);
+        }
+      }
+
+      drawLoop(svg, x, y, label = '') {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const r = this.nodeRadius;
+        const d = `M ${x} ${y - r} Q ${x + r * 1.5} ${y - r * 2}, ${x + r * 0.7} ${y - r * 0.7}`;
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'graph-edge');
+        path.setAttribute('fill', 'none');
+        svg.appendChild(path);
+
+        if (label) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', x + r * 1.2);
+          text.setAttribute('y', y - r * 1.5);
+          text.setAttribute('class', 'graph-edge-label');
+          text.textContent = label;
+          svg.appendChild(text);
+        }
+      }
+    }
+
+    window.GraphRenderer = GraphRenderer;
+
     // Dados em memória
     const flashcards = [
       {id:1,categoria:"Conceitos Básicos",frente:"O que é um Grafo?",verso:"Um grafo G(V,E) é uma estrutura composta por:\n- V: conjunto não vazio de vértices (ou nós)\n- E: subconjunto de pares não ordenados de V (arestas)",dica:"Lembre-se: G(V,E) = Vértices + Arestas"},
@@ -669,18 +865,275 @@
     const exercicios = [
       {
         numero: 1, nivel: 'Básico', titulo: 'Identificação de Elementos',
-        enunciado: 'Dado o grafo abaixo:\nA --- B\n|     |\nC --- D --- E\n\na) Qual é a ordem do grafo?\nb) Liste todos os pares de vértices adjacentes\nc) Calcule o grau de cada vértice\nd) O grafo é conexo? Por quê?',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 100, y: 100 },
+            { id: 'B', label: 'B', x: 300, y: 100 },
+            { id: 'C', label: 'C', x: 100, y: 250 },
+            { id: 'D', label: 'D', x: 300, y: 250 },
+            { id: 'E', label: 'E', x: 500, y: 250 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'A', to: 'C' },
+            { from: 'B', to: 'D' },
+            { from: 'C', to: 'D' },
+            { from: 'D', to: 'E' }
+          ]
+        },
+        enunciado: 'Dado o grafo ao lado:\n\na) Qual é a ordem do grafo?\nb) Liste todos os pares de vértices adjacentes\nc) Calcule o grau de cada vértice\nd) O grafo é conexo? Por quê?',
         resposta: 'a) Ordem = 5 vértices (A, B, C, D, E)\n\nb) Vértices adjacentes:\n- A e B, A e C\n- B e D\n- C e D\n- D e E\n\nc) Graus:\n- Gr(A) = 2\n- Gr(B) = 2\n- Gr(C) = 2\n- Gr(D) = 3\n- Gr(E) = 1\n\nd) SIM, é conexo porque existe caminho entre qualquer par de vértices.'
       },
-      { numero:2, nivel:'Básico', titulo:'Classificação de Grafos', enunciado:'Classifique os grafos quanto a ser simples/multigrafo e conexo/desconexo...', resposta:'Análise detalhada dos tipos de grafos...' },
-      { numero:3, nivel:'Intermediário', titulo:'Matriz de Adjacência', enunciado:'Construa a matriz de adjacência...', resposta:'Matriz construída passo a passo...' },
-      { numero:4, nivel:'Intermediário', titulo:'Construir Matriz Ponderada', enunciado:'Dado um grafo valorado...', resposta:'Solução com pesos nas arestas...' },
-      { numero:5, nivel:'Intermediário', titulo:'Euleriano vs Hamiltoniano', enunciado:'Determine se o grafo possui caminho euleriano ou hamiltoniano...', resposta:'Análise dos graus e caminhos...' },
-      { numero:6, nivel:'Avançado', titulo:'Grafo Complementar', enunciado:'Construa o complemento do grafo dado...', resposta:'Complemento com todas as arestas invertidas...' },
-      { numero:7, nivel:'Avançado', titulo:'Identificar Grafo Bipartido', enunciado:'Verifique se o grafo é bipartido...', resposta:'Divisão em dois conjuntos U e V...' },
-      { numero:8, nivel:'Avançado', titulo:'Pontes de Königsberg', enunciado:'Resolva o clássico problema das pontes...', resposta:'Solução usando caminho euleriano...' },
-      { numero:9, nivel:'Avançado', titulo:'Árvore e Propriedades', enunciado:'Prove as propriedades de uma árvore...', resposta:'Demonstração das três propriedades...' },
-      { numero:10, nivel:'Avançado', titulo:'Isomorfismo', enunciado:'Determine se dois grafos são isomorfos...', resposta:'Mapeamento de vértices preservando adjacências...' }
+      { 
+        numero: 2, 
+        nivel: 'Básico', 
+        titulo: 'Classificação de Grafos',
+        grafo: {
+          nodes: [
+            { id: 'A1', label: 'A', x: 80, y: 80 },
+            { id: 'B1', label: 'B', x: 180, y: 80 },
+            { id: 'C1', label: 'C', x: 280, y: 80 },
+            { id: 'A2', label: 'A', x: 80, y: 200 },
+            { id: 'B2', label: 'B', x: 180, y: 200 },
+            { id: 'A3', label: 'A', x: 350, y: 200 },
+            { id: 'B3', label: 'B', x: 450, y: 200 },
+            { id: 'C3', label: 'C', x: 350, y: 320 },
+            { id: 'D3', label: 'D', x: 450, y: 320 },
+            { id: 'A4', label: 'A', x: 550, y: 80 }
+          ],
+          edges: [
+            { from: 'A1', to: 'B1' },
+            { from: 'B1', to: 'C1' },
+            { from: 'A2', to: 'B2', type: 'double' },
+            { from: 'A3', to: 'B3' },
+            { from: 'C3', to: 'D3' },
+            { from: 'A4', to: 'A4', type: 'loop' }
+          ]
+        },
+        enunciado: 'Classifique cada grafo quanto a:\n- Simples ou Multigrafo\n- Conexo ou Desconexo\n- Se possui pontes\n\nGrafo 1 (superior esquerdo): A-B-C linear\nGrafo 2 (meio esquerdo): Duas arestas entre A e B\nGrafo 3 (direito meio): A-B e C-D separados\nGrafo 4 (superior direito): Vértice A com laço', 
+        resposta: 'Grafo 1: SIMPLES, CONEXO, Pontes: A-B e B-C\n\nGrafo 2: MULTIGRAFO (arestas paralelas), CONEXO, Sem pontes\n\nGrafo 3: SIMPLES, DESCONEXO (A-B separado de C-D), Todas são pontes\n\nGrafo 4: MULTIGRAFO (laço), CONEXO, Sem ponte' 
+      },
+      { 
+        numero: 3, 
+        nivel: 'Intermediário', 
+        titulo: 'Matriz de Adjacência',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 150, y: 100 },
+            { id: 'B', label: 'B', x: 450, y: 100 },
+            { id: 'C', label: 'C', x: 150, y: 300 },
+            { id: 'D', label: 'D', x: 450, y: 300 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'A', to: 'C' },
+            { from: 'B', to: 'D' },
+            { from: 'C', to: 'D' }
+          ]
+        },
+        enunciado: 'Dada a matriz de adjacência:\n\n    A B C D\nA [ 0 1 1 0 ]\nB [ 1 0 0 1 ]\nC [ 1 0 0 1 ]\nD [ 0 1 1 0 ]\n\na) O grafo está representado ao lado\nb) Qual o grau de cada vértice?\nc) Existe algum caminho Euleriano?\nd) O grafo é completo?', 
+        resposta: 'a) O grafo forma um quadrado\n\nb) Graus: Gr(A)=2, Gr(B)=2, Gr(C)=2, Gr(D)=2\n   (soma de cada linha/coluna)\n\nc) SIM, existe caminho Euleriano.\n   TODOS os vértices têm grau PAR.\n   Logo, existe até CICLO Euleriano!\n\nd) NÃO é completo. Faltam arestas A-D e B-C.' 
+      },
+      { 
+        numero: 4, 
+        nivel: 'Intermediário', 
+        titulo: 'Grafo Ponderado',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 100, y: 150 },
+            { id: 'B', label: 'B', x: 300, y: 100 },
+            { id: 'C', label: 'C', x: 500, y: 100 },
+            { id: 'D', label: 'D', x: 100, y: 300 },
+            { id: 'E', label: 'E', x: 500, y: 300 }
+          ],
+          edges: [
+            { from: 'A', to: 'B', label: '5' },
+            { from: 'B', to: 'C', label: '3' },
+            { from: 'A', to: 'D', label: '2' },
+            { from: 'C', to: 'E', label: '7' },
+            { from: 'D', to: 'E', label: '4' }
+          ]
+        },
+        enunciado: 'Dado o grafo ponderado ao lado:\n\na) Construa a matriz de adjacência ponderada\nb) Qual o caminho de A até E de menor custo?', 
+        resposta: 'a) Matriz Ponderada:\n    A  B  C  D  E\nA [ 0  5  0  2  0 ]\nB [ 5  0  3  0  0 ]\nC [ 0  3  0  0  7 ]\nD [ 2  0  0  0  4 ]\nE [ 0  0  7  4  0 ]\n\nb) Caminhos:\n   - A→D→E: 2+4 = 6 ✓ MENOR\n   - A→B→C→E: 5+3+7 = 15\n\nResposta: A-D-E com custo 6' 
+      },
+      { 
+        numero: 5, 
+        nivel: 'Intermediário', 
+        titulo: 'Euleriano vs Hamiltoniano',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 100, y: 100 },
+            { id: 'B', label: 'B', x: 300, y: 100 },
+            { id: 'C', label: 'C', x: 500, y: 100 },
+            { id: 'D', label: 'D', x: 100, y: 300 },
+            { id: 'E', label: 'E', x: 300, y: 300 },
+            { id: 'F', label: 'F', x: 500, y: 300 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'B', to: 'C' },
+            { from: 'A', to: 'D' },
+            { from: 'D', to: 'E' },
+            { from: 'E', to: 'F' },
+            { from: 'B', to: 'E' },
+            { from: 'C', to: 'F' }
+          ]
+        },
+        enunciado: 'Para o grafo ao lado:\n\na) Existe caminho Euleriano? E ciclo Euleriano?\nb) Existe caminho Hamiltoniano? E ciclo Hamiltoniano?\nc) Justifique', 
+        resposta: 'a) EULERIANO:\n   Graus: A=2, B=3, C=2, D=2, E=3, F=2\n   Caminho Euleriano: SIM (2 vértices ímpares)\n   Ciclo: NÃO (nem todos pares)\n\nb) HAMILTONIANO:\n   Caminho: SIM (ex: A-D-E-F-C-B)\n   Ciclo: SIM (ex: A-B-C-F-E-D-A)\n\nc) Euleriano: verifica graus\n   Hamiltoniano: percursos de vértices' 
+      },
+      { 
+        numero: 6, 
+        nivel: 'Avançado', 
+        titulo: 'Grafo Complementar',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 100, y: 150 },
+            { id: 'B', label: 'B', x: 250, y: 100 },
+            { id: 'C', label: 'C', x: 100, y: 250 },
+            { id: 'D', label: 'D', x: 250, y: 200 },
+            { id: 'A2', label: 'A\'', x: 400, y: 150 },
+            { id: 'B2', label: 'B\'', x: 550, y: 100 },
+            { id: 'C2', label: 'C\'', x: 400, y: 250 },
+            { id: 'D2', label: 'D\'', x: 550, y: 200 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'A', to: 'C' },
+            { from: 'A2', to: 'D2' },
+            { from: 'B2', to: 'C2' },
+            { from: 'B2', to: 'D2' },
+            { from: 'C2', to: 'D2' }
+          ]
+        },
+        enunciado: 'Grafo G (esquerda) tem 4 vértices e arestas {A-B, A-C}\nGrafo complementar G\' (direita) é mostrado\n\na) Qual a soma das arestas de G e G\'?\nb) O que você conclui?', 
+        resposta: 'a) G: 2 arestas\n   G\': {A-D, B-C, B-D, C-D} = 4 arestas\n   Total: 6\n\nb) CONCLUSÃO: G + G\' = K₄ (completo)\n   Para n=4: n(n-1)/2 = 6 ✓' 
+      },
+      { 
+        numero: 7, 
+        nivel: 'Avançado', 
+        titulo: 'Grafos Bipartidos',
+        grafo: {
+          nodes: [
+            { id: 'A1', label: 'A', x: 80, y: 100 },
+            { id: 'B1', label: 'B', x: 150, y: 150 },
+            { id: 'C1', label: 'C', x: 80, y: 200 },
+            { id: 'A2', label: 'A', x: 280, y: 100 },
+            { id: 'B2', label: 'B', x: 400, y: 100 },
+            { id: 'C2', label: 'C', x: 280, y: 200 },
+            { id: 'D2', label: 'D', x: 400, y: 200 },
+            { id: 'C3', label: 'C', x: 500, y: 150 },
+            { id: 'P1', label: 'P1', x: 540, y: 80 },
+            { id: 'P2', label: 'P2', x: 580, y: 120 },
+            { id: 'P3', label: 'P3', x: 580, y: 180 },
+            { id: 'P4', label: 'P4', x: 540, y: 220 }
+          ],
+          edges: [
+            { from: 'A1', to: 'B1' },
+            { from: 'B1', to: 'C1' },
+            { from: 'C1', to: 'A1' },
+            { from: 'A2', to: 'B2' },
+            { from: 'B2', to: 'C2' },
+            { from: 'C2', to: 'D2' },
+            { from: 'D2', to: 'A2' },
+            { from: 'C3', to: 'P1' },
+            { from: 'C3', to: 'P2' },
+            { from: 'C3', to: 'P3' },
+            { from: 'C3', to: 'P4' }
+          ]
+        },
+        enunciado: 'Quais grafos são bipartidos?\n\nGrafo 1 (esquerda): Triângulo\nGrafo 2 (meio): Quadrado\nGrafo 3 (direita): Estrela com 4 pontas', 
+        resposta: 'Grafo 1: NÃO (ciclo ímpar de 3)\n\nGrafo 2: SIM\n   U={A,C} e V={B,D}\n\nGrafo 3: SIM\n   U={centro} e V={pontas}\n\nREGRA: Ciclos ímpares → não bipartido' 
+      },
+      { 
+        numero: 8, 
+        nivel: 'Avançado', 
+        titulo: 'Pontes de Königsberg',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 150, y: 200 },
+            { id: 'B', label: 'B', x: 450, y: 150 },
+            { id: 'C', label: 'C', x: 450, y: 250 },
+            { id: 'D', label: 'D', x: 300, y: 200 }
+          ],
+          edges: [
+            { from: 'A', to: 'B', type: 'double' },
+            { from: 'A', to: 'C', type: 'double' },
+            { from: 'B', to: 'D' },
+            { from: 'C', to: 'D' },
+            { from: 'B', to: 'C' }
+          ]
+        },
+        enunciado: 'Cidade com 4 regiões e 7 pontes:\n- 2 pontes A-B\n- 2 pontes A-C\n- 1 ponte B-D, C-D, B-C\n\nÉ possível atravessar todas as pontes uma vez?', 
+        resposta: 'Graus:\n- Gr(A)=4\n- Gr(B)=5\n- Gr(C)=5\n- Gr(D)=2\n\n3 vértices ímpares → NÃO é possível!\n\n(Euler, 1736)' 
+      },
+      { 
+        numero: 9, 
+        nivel: 'Avançado', 
+        titulo: 'Propriedades de Árvores',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 300, y: 80 },
+            { id: 'B', label: 'B', x: 200, y: 160 },
+            { id: 'C', label: 'C', x: 400, y: 160 },
+            { id: 'D', label: 'D', x: 150, y: 240 },
+            { id: 'E', label: 'E', x: 250, y: 240 },
+            { id: 'F', label: 'F', x: 350, y: 240 },
+            { id: 'G', label: 'G', x: 450, y: 240 },
+            { id: 'H', label: 'H', x: 120, y: 320 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'A', to: 'C' },
+            { from: 'B', to: 'D' },
+            { from: 'B', to: 'E' },
+            { from: 'C', to: 'F' },
+            { from: 'C', to: 'G' },
+            { from: 'D', to: 'H' }
+          ]
+        },
+        enunciado: 'Árvore com 8 vértices:\n\na) Quantas arestas possui?\nb) Se remover 1 aresta?\nc) Se adicionar 1 aresta?\nd) Todas são pontes?', 
+        resposta: 'a) n-1 = 8-1 = 7 arestas\n\nb) Fica DESCONEXO\n   (arestas são pontes)\n\nc) Cria CICLO\n   (árvore é acíclica)\n\nd) SIM, todas são pontes\n\nTEOREMA: conexo + n-1 arestas + acíclico' 
+      },
+      { 
+        numero: 10, 
+        nivel: 'Avançado', 
+        titulo: 'Isomorfismo de Grafos',
+        grafo: {
+          nodes: [
+            { id: 'A', label: 'A', x: 80, y: 100 },
+            { id: 'B', label: 'B', x: 200, y: 100 },
+            { id: 'C', label: 'C', x: 80, y: 220 },
+            { id: 'D', label: 'D', x: 200, y: 220 },
+            { id: 'W', label: 'W', x: 300, y: 100 },
+            { id: 'X', label: 'X', x: 420, y: 100 },
+            { id: 'Y', label: 'Y', x: 420, y: 220 },
+            { id: 'Z', label: 'Z', x: 300, y: 220 },
+            { id: '1', label: '1', x: 480, y: 100 },
+            { id: '2', label: '2', x: 560, y: 100 },
+            { id: '3', label: '3', x: 480, y: 220 },
+            { id: '4', label: '4', x: 560, y: 220 }
+          ],
+          edges: [
+            { from: 'A', to: 'B' },
+            { from: 'A', to: 'C' },
+            { from: 'B', to: 'D' },
+            { from: 'C', to: 'D' },
+            { from: 'W', to: 'X' },
+            { from: 'X', to: 'Y' },
+            { from: 'Y', to: 'Z' },
+            { from: 'Z', to: 'W' },
+            { from: '1', to: '2' },
+            { from: '1', to: '3' },
+            { from: '2', to: '4' },
+            { from: '3', to: '4' },
+            { from: '2', to: '3' }
+          ]
+        },
+        enunciado: 'G1 e G2 são isomorfos? E G1 e G3?\n\nG1 (esquerda): 4 arestas\nG2 (meio): 4 arestas\nG3 (direita): 5 arestas', 
+        resposta: 'G1 e G2: SIM\n   - Mesmos vértices: 4\n   - Mesmas arestas: 4\n   - Mesmos graus: [2,2,2,2]\n   - Mapeamento: A→W, B→X, C→Y, D→Z\n\nG1 e G3: NÃO\n   - G1: 4 arestas\n   - G3: 5 arestas\n   - Graus diferentes' 
+      }
     ];
 
     // Estado global
@@ -829,8 +1282,13 @@
       let excs = nivel ? exercicios.filter(e=>e.nivel === nivel) : exercicios;
       let html = excs.map(e => {
         let tentativa = (exercicioTentativas[e.numero]||'');
+        let diagramaHtml = '';
+        if (e.grafo) {
+          diagramaHtml = `<div class="exercicio-diagrama" id="diagrama-container-${e.numero}"></div>`;
+        }
         return `<div class="exercicio-card">
           <div class="exercicio-titulo">${e.numero}. ${e.titulo}</div>
+          ${diagramaHtml}
           <div class="exercicio-enunciado">${e.enunciado.replace(/\n/g,'<br>')}</div>
           <textarea class="exercicio-entrada" id="resp-${e.numero}" placeholder="Digite sua resposta aqui...">${tentativa}</textarea>
           <div class="exercicio-actions">
@@ -841,6 +1299,17 @@
         </div>`;
       }).join('');
       document.getElementById('exercicios-lista').innerHTML = html;
+      
+      // Renderizar diagramas
+      const renderer = new GraphRenderer();
+      excs.forEach(e => {
+        if (e.grafo) {
+          const container = document.getElementById(`diagrama-container-${e.numero}`);
+          if (container) {
+            renderer.renderGraph(container, e.grafo);
+          }
+        }
+      });
     }
 
     window.registrarResposta = function(num) {
