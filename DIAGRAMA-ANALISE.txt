@@ -1,0 +1,156 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                  DIAGRAMA DE ANÁLISE - SISTEMA DE GRAFOS                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          PDF: resumo-grafos-prova.pdf                        │
+│                          Extraído → resumo-grafos-prova.md                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                    ┌─────────────────┴─────────────────┐
+                    │      Análise Comparativa          │
+                    └─────────────────┬─────────────────┘
+                                      │
+              ┌───────────────────────┼───────────────────────┐
+              │                       │                       │
+              ▼                       ▼                       ▼
+    ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
+    │   FLASHCARDS    │   │   EXERCÍCIOS    │   │     INDEX.HTML  │
+    │   (26 cards)    │   │   (10 items)    │   │   (Aplicação)   │
+    └─────────────────┘   └─────────────────┘   └─────────────────┘
+              │                       │                       │
+              └───────────────────────┼───────────────────────┘
+                                      │
+                        ┌─────────────┴─────────────┐
+                        │   VALIDAÇÃO AUTOMÁTICA    │
+                        └─────────────┬─────────────┘
+                                      │
+                    ┌─────────────────┴─────────────────┐
+                    │                                   │
+                    ▼                                   ▼
+        ┌────────────────────┐              ┌────────────────────┐
+        │  Cobertura: 84%    │              │  Inconsistências   │
+        │  26/31 tópicos     │              │  Encontradas: 3    │
+        └────────────────────┘              └────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                           RESULTADOS DA ANÁLISE                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ COBERTURA POR CATEGORIA                                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Tipos de Arestas              ████████████████████  100%  ✅               │
+│  Classificação de Grafos       ████████████████████  100%  ✅               │
+│  Caminhos e Ciclos             ████████████████████  100%  ✅               │
+│  Isomorfismo                   ████████████████████  100%  ✅               │
+│  Euleriano/Hamiltoniano        ███████████████░░░░░   75%  🟡               │
+│  Representações                ███████████████░░░░░   75%  🟡               │
+│  Definições Fundamentais       ██████████████░░░░░░   71%  🔴               │
+│                                                                              │
+│  TOTAL GERAL                   ████████████████░░░░   84%  🟡               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ INCONSISTÊNCIAS POR SEVERIDADE                                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  🔴 ALTA (Crítica)          ██  1 encontrada                                 │
+│     └─ Definição de Adjacência (erro conceitual)                            │
+│                                                                              │
+│  🟡 MÉDIA (Importante)      ████  2 encontradas                              │
+│     ├─ Ciclo Euleriano ausente                                              │
+│     └─ Fórmula n(n-1)/2 não mencionada                                      │
+│                                                                              │
+│  🟢 BAIXA (Opcional)        ███  3 sugeridas                                 │
+│     ├─ Conceitos básicos faltantes                                          │
+│     ├─ Mais exercícios de nível Básico                                      │
+│     └─ Matriz Ponderada como conceito separado                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DISTRIBUIÇÃO DE FLASHCARDS                                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Classificação de Grafos   █████████████████  8 cards (31%)                 │
+│  Graus de Vértices         ███████████  4 cards (15%)                        │
+│  Conceitos Básicos         ████████  3 cards (12%)                           │
+│  Tipos de Arestas          ████████  3 cards (12%)                           │
+│  Representações            ████████  3 cards (12%)                           │
+│  Caminhos                  █████  2 cards (8%)                               │
+│  Euleriano vs Hamilton.    █████  2 cards (8%)                               │
+│  Isomorfismo               ███  1 card (4%)                                  │
+│                                                                              │
+│  TOTAL: 26 flashcards                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DISTRIBUIÇÃO DE EXERCÍCIOS                                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Avançado          ████████████████████  5 exercícios (50%)                  │
+│  Intermediário     ████████████  3 exercícios (30%)                          │
+│  Básico            ████  2 exercícios (20%)  ⚠️ POUCOS                       │
+│                                                                              │
+│  TOTAL: 10 exercícios                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            AÇÕES RECOMENDADAS                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  URGENTE 🔴
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │ 1. Corrigir definição de ADJACÊNCIA no flashcard                      │
+  │    • Separar claramente adjacência de vértices vs arestas             │
+  │    • Reescrever exemplo para evitar confusão                          │
+  └────────────────────────────────────────────────────────────────────────┘
+
+  IMPORTANTE 🟡
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │ 2. Adicionar flashcard sobre CICLO EULERIANO                          │
+  │    • Explicar diferença entre Caminho e Ciclo                         │
+  │    • Incluir condições (todos vértices pares)                         │
+  │                                                                        │
+  │ 3. Completar flashcard de GRAFO COMPLETO                              │
+  │    • Adicionar fórmula n(n-1)/2                                       │
+  │    • Incluir exemplo numérico (K4 = 6 arestas)                        │
+  └────────────────────────────────────────────────────────────────────────┘
+
+  OPCIONAL 🟢
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │ 4. Adicionar flashcards para conceitos básicos                        │
+  │    • G(V,E) como definição formal                                     │
+  │    • Ordem |V| como conceito separado                                 │
+  │                                                                        │
+  │ 5. Criar mais exercícios de nível BÁSICO                              │
+  │    • Atualmente: apenas 2 (20% do total)                              │
+  │    • Recomendado: 4-5 exercícios básicos                              │
+  └────────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         DOCUMENTAÇÃO GERADA                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  📄 resumo-grafos-prova.md (188 linhas, 5.0K)
+     └─ PDF convertido para Markdown com formatação melhorada
+
+  📄 ANALISE-COMPARATIVA.md (319 linhas, 8.9K)
+     └─ Análise detalhada completa com validações e recomendações
+
+  📄 SUMARIO-EXECUTIVO.md (199 linhas, 6.1K)
+     └─ Resumo executivo dos principais achados
+
+  📄 DIAGRAMA-ANALISE.txt (este arquivo)
+     └─ Visualização gráfica dos resultados
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                               CONCLUSÃO                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ✅ Sistema BEM CONSTRUÍDO com cobertura de 84%
+  ⚠️  1 erro conceitual crítico requer correção urgente
+  🎯 Com 3 correções prioritárias → cobertura de ~95%
+  💡 Qualidade geral ALTA, correções são cirúrgicas
+
